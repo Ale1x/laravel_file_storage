@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +18,7 @@
         <div class="md:flex">
             <div class="md:flex-shrink-0 p-8 mx-auto">
                 <h3 class="text-lg font-semibold text-center mb-4">File Upload</h3>
-                <form action="/upload" method="post" enctype="multipart/form-data" class="text-center">
+                <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data" class="text-center">
                     @csrf
                     <!-- Centra il file selector -->
                     <div class="mt-4 text-center">
@@ -34,6 +35,23 @@
                         </button>
                     </div>
                 </form>
+                <div class="relative pt-1">
+                    <div class="flex mb-2 items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-teal-600 bg-teal-200">
+                        % Caricamento
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span id="progress-text" class="text-xs font-semibold inline-block text-teal-600">
+                        0%
+                        </span>
+                    </div>
+                    </div>
+                    <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-teal-200">
+                    <div id="progress-bar" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-teal-500"></div>
+                    </div>
+                </div>
 
                 @if (session('status'))
                 <div class="mt-4 p-4 text-white text-center rounded {{ session('status') === 'File Caricato con successo!' ? 'bg-green-500' : 'bg-red-500' }}">
@@ -45,3 +63,44 @@
     </div>
 </body>
 </html>
+
+<script>
+    $(document).ready(function () {
+        $("#upload-form").on("submit", function (e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+            xhr: function () {
+                let xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener(
+                "progress",
+                function (e) {
+                    if (e.lengthComputable) {
+                    let percentComplete = (e.loaded / e.total) * 100;
+                    $("#progress-bar").width(percentComplete + "%");
+                    $("#progress-text").text(percentComplete + "%");
+                    }
+                },
+                false
+                );
+                return xhr;
+            },
+            type: "POST",
+            url: "/upload", // Sostituisci con il tuo URL di caricamento
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response);
+                // Qui puoi gestire la risposta del server
+            },
+            error: function (error) {
+                console.log(error);
+                // Qui puoi gestire gli errori
+            },
+            });
+        });
+    });
+</script>
