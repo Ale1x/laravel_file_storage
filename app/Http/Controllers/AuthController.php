@@ -24,9 +24,10 @@ class AuthController extends Controller
         ], [
             'name' => $githubUser->name,
             'email' => $githubUser->email,
+            'username' => $githubUser->nickname,
             'github_token' => $githubUser->token,
             'github_refresh_token' => $githubUser->refreshToken,
-            'commiter_name' => $githubUser->name,
+            'commiter_name' => $githubUser->nickname,
             'repository_name' => 'appunti',
             'commit_message' => "Aggiunto nuovo file!",
             'password' => Hash::make(Str::random(24)),
