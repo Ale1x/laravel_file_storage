@@ -23,6 +23,9 @@ class User extends Authenticatable
         'password',
         'github_id',
         'github_token',
+        'commiter_name',
+        'repository_name',
+        'commit_message',
     ];
 
     /**

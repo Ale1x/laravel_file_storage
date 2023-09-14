@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
-use App\Models\User;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +34,6 @@ Route::get('/upload', function() {
 });
 
 Route::post('/upload', [FileController::class, 'handleUpload'])->middleware('auth');
+
+Route::get('/profilo', [AuthController::class, 'index'])->middleware('auth');
+Route::post('/profilo', [AuthController::class, 'update'])->name('profilo.update')->middleware('auth');
