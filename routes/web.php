@@ -27,7 +27,7 @@ Route::get('/auth/callback', [AuthController::class, 'handleProviderCallback']);
 
 Route::get('/upload', function() {
     return view('upload');
-});
+})->middleware('auth');
 
 Route::post('/upload', [FileController::class, 'handleUpload'])->middleware('auth');
 
