@@ -50,11 +50,11 @@ This application allows you to upload your school notes directly to a GitHub rep
 
 You'll need to add some environment variables to your `.env` file:
 
-\```env
+\`
 GITHUB_CLIENT_ID=your_client_id_here
 GITHUB_CLIENT_SECRET=your_client_secret_here
 GITHUB_REDIRECT_URI=your_redirect_uri_here
-\```
+\`
 
 ### Generating OAuth Credentials
 
