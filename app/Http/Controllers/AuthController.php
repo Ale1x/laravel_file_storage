@@ -18,25 +18,32 @@ class AuthController extends Controller
 
     public function handleProviderCallback() {
         $githubUser = Socialite::driver('github')->user();
-
-        $user = User::updateOrCreate([
-            'github_id' => $githubUser->id,
-        ], [
-            'name' => $githubUser->name,
-            'email' => $githubUser->email,
-            'username' => $githubUser->nickname,
-            'github_token' => $githubUser->token,
-            'github_refresh_token' => $githubUser->refreshToken,
-            'commiter_name' => $githubUser->nickname,
-            'repository_name' => 'appunti',
-            'commit_message' => "Aggiunto nuovo file!",
-            'password' => Hash::make(Str::random(24)),
-        ]);
-
+    
+        // Cerca l'utente nel database tramite l'ID di GitHub
+        $user = User::where('github_id', $githubUser->id)->first();
+    
+        // Se l'utente non esiste, crealo
+        if (!$user) {
+            $user = User::create([
+                'github_id' => $githubUser->id,
+                'name' => $githubUser->name,
+                'email' => $githubUser->email,
+                'username' => $githubUser->nickname,
+                'github_token' => $githubUser->token,
+                'github_refresh_token' => $githubUser->refreshToken,
+                'commiter_name' => $githubUser->nickname,
+                'repository_name' => 'appunti-scuola',
+                'commit_message' => "Aggiunto nuovo file!",
+                'password' => Hash::make(Str::random(24)),
+            ]);
+        }
+    
+        // Effettua il login dell'utente
         Auth::login($user);
-
+    
         return redirect('/upload');
     }
+    
 
     public function index()
     {
